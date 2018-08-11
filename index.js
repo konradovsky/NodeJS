@@ -2,6 +2,14 @@ const http = require('http');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
+const _data = require('./lib/data');
+
+// Testing
+// @TODO remove it after test
+
+_data.create('test','newFile',{'foo': 'bar'}, (err) => {
+    console.log('This is the error that appeared =>', err)
+})
 
 // 1. Build Server
 const server = http.createServer((req,res) => {
@@ -24,6 +32,7 @@ const server = http.createServer((req,res) => {
 
     // 7. Handling the payload
     const decoder = new StringDecoder('utf-8');
+    
     let buffer = ''
 
     req.on('data', data => {
