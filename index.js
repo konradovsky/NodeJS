@@ -7,8 +7,9 @@ const _data = require('./lib/data');
 // Testing
 // @TODO remove it after test
 
-_data.create('test','newFile',{'foo': 'bar'}, (err) => {
-    console.log('This is the error that appeared =>', err)
+_data.read('test','newFile', (err, data) => {
+    console.log('This is the error that appeared =>', err);
+    console.log('This is the data', data)
 })
 
 // 1. Build Server
