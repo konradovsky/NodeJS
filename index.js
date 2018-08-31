@@ -4,13 +4,6 @@ const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const _data = require('./lib/data');
 
-// Testing
-// @TODO remove it after test
-
-_data.read('test','newFile', (err, data) => {
-    console.log('This is the error that appeared =>', err);
-    console.log('This is the data', data)
-})
 
 // 1. Build Server
 const server = http.createServer((req,res) => {
