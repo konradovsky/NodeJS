@@ -6,13 +6,16 @@ let enviroments = {};
 // Development enviroment
 enviroments.development = {
     'port' : 3000,
-    'envName' : 'development'
+    'envName' : 'development',
+    'hashingSecret': 'thisIsASecret'
 }
 
 // Production enviroment
 enviroments.production = {
     'port' : 5000,
-    'envName' : 'production'
+    'envName' : 'production',
+    'hashingSecret': 'thisIsAlsoSecret'
+
 }
 
 // Determine which enviroment was passed as a command-line argument

@@ -3,6 +3,9 @@ const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const _data = require('./lib/data');
+const handlers = require('./lib/handlers');
+const helpers = require('./lib/helpers');
+
 
 
 // 1. Build Server
@@ -37,7 +40,7 @@ const server = http.createServer((req,res) => {
         buffer += decoder.end();
 
         // 8.4 Choose the handler request should go to
-        const choosenHandler = typeof(router[trimmedPath]) !== 'undefined' ?  router[trimmedPath] : handlers.notFound;
+        let choosenHandler = typeof(router[trimmedPath]) !== 'undefined' ?  router[trimmedPath] : handlers.notFound;
 
         // 8.5 Construct data object to send to the handler
         let data = {
@@ -45,11 +48,11 @@ const server = http.createServer((req,res) => {
             'queryStringObject': queryStringObject,
             'method': method,
             'headers': headers,
-            'payload': buffer
+            'payload': helpers.parseJsonToObject(buffer)
         };
 
         // 8.6 Route the request to the handler specified in the router
-        choosenHandler(data, (statusCode, payload) => {
+        choosenHandler(data, function(statusCode, payload) {
 
             // 8.7 Use the status code calleback by the handler, or default 200
             statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
@@ -70,27 +73,10 @@ const server = http.createServer((req,res) => {
         });
     });
 
-    // 8. Routing
-    
-    // 8.2 Define handlers object
-    let handlers = {};
- 
-    // 8.3 Define handler object methods
-    handlers.hello = (data, callback) => {
-
-        // Call back Http status code & payload
-        callback(200, {'importantMessage': 'I love coding'})
-
-    }
-
-    // 8.3.1 Not fount router
-    handlers.notFound = (data, callback) => {
-        callback(404)
-    }
-
     // 8.1 Define a request router
     const router = {
-        'hello': handlers.hello
+        'ping': handlers.ping,
+        'users': handlers.users
     }
 })
 
