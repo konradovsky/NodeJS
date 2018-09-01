@@ -41,7 +41,8 @@ const server = http.createServer((req,res) => {
 
         // 8.4 Choose the handler request should go to
         let choosenHandler = typeof(router[trimmedPath]) !== 'undefined' ?  router[trimmedPath] : handlers.notFound;
-
+        console.log(choosenHandler);
+        console.log(router[trimmedPath])
         // 8.5 Construct data object to send to the handler
         let data = {
             'trimmedPath': trimmedPath,
@@ -74,7 +75,7 @@ const server = http.createServer((req,res) => {
     });
 
     // 8.1 Define a request router
-    const router = {
+    var router = {
         'ping': handlers.ping,
         'users': handlers.users
     }
