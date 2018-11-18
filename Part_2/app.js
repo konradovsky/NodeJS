@@ -4,8 +4,8 @@ const express = require('express');
 
 const app = express();
 
-app.use(() => {
-
+app.use((req, res, next) => {
+    res.send('<h1>Test!</h1>'); // Just sends a response to the frontend
 });
 
 const server = http.createServer(app);
