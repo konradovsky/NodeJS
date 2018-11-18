@@ -1,0 +1,24 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/konradovsky/NodeJS.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/konradovsky/NodeJS/issues"
+  },
+  "homepage": "https://github.com/konradovsky/NodeJS#readme",
+  "devDependencies": {
+    "express": "^4.16.4",
+    "nodemon": "^1.18.6"
+  }
+}
