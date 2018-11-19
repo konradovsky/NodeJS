@@ -12,7 +12,7 @@ app.use('/add-product', (req, res, next) => {
     res.send('<form action="/product" method="POST"><input name="title" type="text"><button type="submit">Send</button></form>'); // Just sends a response to the frontend
 });
 
-app.use('/product', (req, res, next) => {
+app.post('/product', (req, res, next) => {
     console.log(req.body);
     res.redirect('/');
 });
