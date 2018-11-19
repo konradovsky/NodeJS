@@ -1,16 +1,15 @@
 const http = require('http');
-
 const express = require('express');
+const bodyParser = require('body-parser');
+
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
 const app = express();
 
-app.use('/about', (req, res, next) => {
-    res.send('<h1>About page</h1>'); // Just sends a response to the frontend
-});
-app.use('/', (req, res, next) => {
-    res.send('<h1>Home Page</h1>'); // Just sends a response to the frontend
-});
+app.use(bodyParser.urlencoded({extended: false}));
 
-const server = http.createServer(app);
+app.use(adminRoutes);
+app.use(shopRoutes);
 
-server.listen(3000);
+app.listen(3000);
