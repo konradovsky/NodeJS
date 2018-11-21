@@ -3,18 +3,26 @@ import { GraphQLServer} from 'graphql-yoga';
 // Type definitions / Application schema
 const typeDefs = `
     type Query {
-        hello: String!
-        name: String
+        post: Post!
+    }
+
+    type Post {
+        id: ID!
+        title: String!
+        body: String!
+        published: Boolean!
     }
 `
 // Resorvers
 const resolvers = {
     Query: {
-        hello() {
-            return 'This is my first query'
-        },
-        name() {
-            return 'Konrad Efix'
+        post() {
+            return {
+                id: '44521-xdcs3423-cxcvsa1234-344-51cfxsav',
+                title: 'World War II',
+                body: 'Lorem ipsum',
+                published: true
+            }
         }
     }
 }
