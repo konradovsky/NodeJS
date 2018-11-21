@@ -10,7 +10,7 @@ const typeDefs = `
         id: ID!
         title: String!
         body: String!
-        published: String!
+        published: Boolean!
     }
 `
 // Resorvers
@@ -21,7 +21,7 @@ const resolvers = {
                 id: '44521-xdcs3423-cxcvsa1234-344-51cfxsav',
                 title: 'World War II',
                 body: 'Lorem ipsum',
-                published: '21-07-1995'
+                published: true
             }
         }
     }
