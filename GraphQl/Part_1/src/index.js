@@ -1,8 +1,8 @@
 import { GraphQLServer} from 'graphql-yoga';
 
 
-// Example users array
 
+// Example users array
 const users = [{
     id: '1',
     name: 'koyo',
@@ -18,48 +18,51 @@ const users = [{
 {
     id: '53',
     name: 'micke',
-    email: 'micke@bun.bun',
+    email: 'micke@bun.bun'
 }]
+
 const posts = [{
     id: '43',
     title: 'Vue is awesome',
     body: 'Lorem ipsum 1',
     published: true,
-    author: '1'
+    author: '1',
 },
 {
     id: '3',
     title: 'Vuex',
     body: 'Lorem ipsum vuex ssd',
     published: true,
-    author: '13'
+    author: '13',
 },
 {
     id: '243',
     title: 'GraphQl',
     body: 'Lorem ipsum dasd',
-    published: false
+    published: false,
+    author: '53',
 }]
+
+
 // Type definitions / Application schema
 const typeDefs = `
     type Query {
         users(query:String): [User!]!
         posts(query:String): [Post!]!
-        me: User!
-        post: Post!
     }
     type User {
         id: ID!
         name: String!
         email: String!
         age: Int
+        posts: [Post!]!
     }
     type Post {
         id: ID!
         title: String!
         body: String!
         published: Boolean!
-        author: User
+        author: User!
     }
 `
 // Resorvers
@@ -78,30 +81,23 @@ const resolvers = {
                 return posts
             }
             return posts.filter(post => {
-                return post.title.toLowerCase().includes(args.query.toLowerCase())
+                const isTitleMatch = post.title.toLowerCase().includes(args.query.toLowerCase())
+                const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
+                return isTitleMatch || isBodyMatch
             })
-        },
-        me() {
-            return {
-                id: '32',
-                name: 'Konrad',
-                email: "konrad.trade@gmail.com",
-                age: 23
-            }
-        },
-        post() {
-            return {
-                id: '44521-xdcs3423-cxcvsa1234-344-51cfxsav',
-                title: 'World War II',
-                body: 'Lorem ipsum',
-                published: true
-            }
         }
     },
-    Post : {
+    Post: {
         author(parent, args, ctx, info) {
             return users.find(user => {
                 return user.id === parent.author
+            })
+        }
+    },
+    User: {
+        posts(parent, args, ctx, info){
+            return posts.filter(post => {
+                return post.author === parent.id
             })
         }
     }
