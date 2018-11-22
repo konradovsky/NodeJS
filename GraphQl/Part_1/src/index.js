@@ -24,13 +24,15 @@ const posts = [{
     id: '43',
     title: 'Vue is awesome',
     body: 'Lorem ipsum 1',
-    published: true
+    published: true,
+    author: '1'
 },
 {
     id: '3',
     title: 'Vuex',
     body: 'Lorem ipsum vuex ssd',
-    published: true
+    published: true,
+    author: '13'
 },
 {
     id: '243',
@@ -57,6 +59,7 @@ const typeDefs = `
         title: String!
         body: String!
         published: Boolean!
+        author: User
     }
 `
 // Resorvers
@@ -93,6 +96,13 @@ const resolvers = {
                 body: 'Lorem ipsum',
                 published: true
             }
+        }
+    },
+    Post : {
+        author(parent, args, ctx, info) {
+            return users.find(user => {
+                return user.id === parent.author
+            })
         }
     }
 }
