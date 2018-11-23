@@ -1,25 +1,30 @@
 import { GraphQLServer} from 'graphql-yoga';
 
-
-
-// Example users array
 const users = [{
     id: '1',
     name: 'koyo',
     email: 'koyo@bun.bun',
-    age: 13
+    age: 13,
 },
 {
-    id: '13',
+    id: '2',
     name: 'polly',
     email: 'polly@bun.bun',
-    age: 12
+    age: 12,
 },
 {
-    id: '53',
+    id: '3',
     name: 'micke',
-    email: 'micke@bun.bun'
+    email: 'micke@bun.bun',
+    age: 55,
+},
+{
+    id: '4',
+    name: 'spirit',
+    email: 'spirit@bun.bun',
+    age: 22,
 }]
+
 const posts = [{
     id: '43',
     title: 'Vue is awesome',
@@ -32,28 +37,37 @@ const posts = [{
     title: 'Vuex',
     body: 'Lorem ipsum vuex ssd',
     published: true,
-    author: '13',
+    author: '2',
 },
 {
     id: '243',
     title: 'GraphQl',
     body: 'Lorem ipsum dasd',
     published: false,
-    author: '53',
+    author: '3',
+    
 }]
 
 const comments = [{
     id: '1',
+    author: '1',
     text: 'Kill Bill Vol. 1'
 },{
     id: '2',
+    author: '2',
     text: 'Kill Bill Vol. 2'
 },{
     id: '3',
+    author: '3',
     text: 'Pulp Fiction'
 },{
     id: '4',
+    author: '4',
     text: 'H8full Eight'
+},{
+    id: '5',
+    author: '1',
+    text: 'Bękarty Wojny'
 }]
 
 // Type definitions / Application schema
@@ -61,10 +75,11 @@ const typeDefs = `
     type Query {
         users(query:String): [User!]!
         posts(query:String): [Post!]!
-        comments: [Comment!]!
+        comments(query:String): [Comment!]!
     }
     type Comment {
         id: ID!
+        author: User!
         text: String!
     }
     type User {
@@ -73,6 +88,7 @@ const typeDefs = `
         email: String!
         age: Int
         posts: [Post!]!
+        comments: [Comment!]!
     }
     type Post {
         id: ID!
@@ -85,7 +101,7 @@ const typeDefs = `
 // Resorvers
 const resolvers = {
     Query: {
-        comments() {
+        comments(parent, args, ctx, info) {
             return comments;
         },
         users(parent, args, ctx, info){
@@ -119,6 +135,18 @@ const resolvers = {
             return posts.filter(post => {
                 return post.author === parent.id
             })
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter(comment => {
+                return comment.author === parent.id
+            })
+        }
+    },
+    Comment: {
+        author(parent, args, ctx, info){
+            return users.find(user => {
+                return user.id === parent.author
+            }) 
         }
     }
 }
@@ -129,5 +157,5 @@ const server = new GraphQLServer({
 });
 
 server.start(() => {
-    console.log('The server is up');
+    console.log('Server\'s up');
 });
