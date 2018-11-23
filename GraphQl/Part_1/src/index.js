@@ -20,7 +20,6 @@ const users = [{
     name: 'micke',
     email: 'micke@bun.bun'
 }]
-
 const posts = [{
     id: '43',
     title: 'Vue is awesome',
@@ -43,12 +42,30 @@ const posts = [{
     author: '53',
 }]
 
+const comments = [{
+    id: '1',
+    text: 'Kill Bill Vol. 1'
+},{
+    id: '2',
+    text: 'Kill Bill Vol. 2'
+},{
+    id: '3',
+    text: 'Pulp Fiction'
+},{
+    id: '4',
+    text: 'H8full Eight'
+}]
 
 // Type definitions / Application schema
 const typeDefs = `
     type Query {
         users(query:String): [User!]!
         posts(query:String): [Post!]!
+        comments: [Comment!]!
+    }
+    type Comment {
+        id: ID!
+        text: String!
     }
     type User {
         id: ID!
@@ -68,6 +85,9 @@ const typeDefs = `
 // Resorvers
 const resolvers = {
     Query: {
+        comments() {
+            return comments;
+        },
         users(parent, args, ctx, info){
             if(!args.query){
                 return users
