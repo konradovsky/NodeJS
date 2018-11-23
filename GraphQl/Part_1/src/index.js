@@ -30,43 +30,47 @@ const posts = [{
     title: 'Vue is awesome',
     body: 'Lorem ipsum 1',
     published: true,
-    author: '1',
+    author: '1'
 },
 {
     id: '3',
     title: 'Vuex',
     body: 'Lorem ipsum vuex ssd',
     published: true,
-    author: '2',
+    author: '2'
 },
 {
     id: '243',
     title: 'GraphQl',
     body: 'Lorem ipsum dasd',
     published: false,
-    author: '3',
-    
+    author: '3'
 }]
 
 const comments = [{
     id: '1',
     author: '1',
+    post: '43',
     text: 'Kill Bill Vol. 1'
 },{
     id: '2',
     author: '2',
+    post: '43',
     text: 'Kill Bill Vol. 2'
 },{
     id: '3',
     author: '3',
+    post: '43',
     text: 'Pulp Fiction'
 },{
     id: '4',
     author: '4',
+    post: '243',
     text: 'H8full Eight'
 },{
     id: '5',
     author: '1',
+    post: '243',
     text: 'Bękarty Wojny'
 }]
 
@@ -81,6 +85,7 @@ const typeDefs = `
         id: ID!
         author: User!
         text: String!
+        post: Post!
     }
     type User {
         id: ID!
@@ -96,6 +101,7 @@ const typeDefs = `
         body: String!
         published: Boolean!
         author: User!
+        comments: [Comment!]!
     }
 `
 // Resorvers
@@ -128,6 +134,11 @@ const resolvers = {
             return users.find(user => {
                 return user.id === parent.author
             })
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter(comment => {
+                return comment.post === parent.id
+            })
         }
     },
     User: {
@@ -147,6 +158,11 @@ const resolvers = {
             return users.find(user => {
                 return user.id === parent.author
             }) 
+        },
+        post(parent, args, ctx, info){
+            return posts.find(post => {
+                return post.id === parent.post
+            })
         }
     }
 }
