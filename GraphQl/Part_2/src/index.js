@@ -1,5 +1,5 @@
 import { GraphQLServer} from 'graphql-yoga';
-
+import uuidv4 from 'uuid/v4'
 const users = [{
     id: '1',
     name: 'koyo',
@@ -24,7 +24,6 @@ const users = [{
     email: 'spirit@bun.bun',
     age: 22,
 }]
-
 const posts = [{
     id: '43',
     title: 'Vue is awesome',
@@ -46,7 +45,6 @@ const posts = [{
     published: false,
     author: '3'
 }]
-
 const comments = [{
     id: '1',
     author: '1',
@@ -80,6 +78,9 @@ const typeDefs = `
         users(query:String): [User!]!
         posts(query:String): [Post!]!
         comments(query:String): [Comment!]!
+    }
+    type Mutation {
+        createUser(name: String!, email: String!, age: Int): User!
     }
     type Comment {
         id: ID!
@@ -127,6 +128,25 @@ const resolvers = {
                 const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
                 return isTitleMatch || isBodyMatch
             })
+        }
+    },
+    Mutation: {
+        createUser(parent, args, ctx, info){
+            const usedEmail = users.some(user => user.email === args.email)
+
+            if(usedEmail) {
+                throw new Error('This email is already used')
+            }
+
+            const user = {
+                id: uuidv4(),
+                name: args.name,
+                email: args.email,
+                age: args.age
+            }
+
+            users.push(user);
+            return user;
         }
     },
     Post: {
