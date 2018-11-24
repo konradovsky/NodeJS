@@ -80,9 +80,25 @@ const typeDefs = `
         comments(query:String): [Comment!]!
     }
     type Mutation {
-        createUser(name: String!, email: String!, age: Int): User!
-        createPost(title: String!, body: String!, published: Boolean!, author: String!): Post!
-        createComment(text: String!, author: String!, post: String!): Comment!
+        createUser(data: CreateUserInput!): User!
+        createPost(data: CreatePostInput!): Post!
+        createComment(data: CreateCommentInput!): Comment!
+    }
+    input CreateUserInput {
+        name: String!, 
+        email: String!, 
+        age: Int
+    }
+    input CreatePostInput {
+        title: String!, 
+        body: String!, 
+        published: Boolean!, 
+        author: String!
+    }
+    input CreateCommentInput {
+        text: String!, 
+        author: String!, 
+        post: String!
     }
     type Comment {
         id: ID!
@@ -134,7 +150,7 @@ const resolvers = {
     },
     Mutation: {
         createUser(parent, args, ctx, info){
-            const usedEmail = users.some(user => user.email === args.email)
+            const usedEmail = users.some(user => user.email === args.data.email)
 
             if(usedEmail) {
                 throw new Error('This email is already used')
@@ -142,14 +158,14 @@ const resolvers = {
 
             const user = {
                 id: uuidv4(),
-                ...args
+                ...args.data
             }
 
             users.push(user);
             return user;
         },
         createPost(parent, args, ctx, info){
-            const existAuthor = users.some(user => user.id === args.author)
+            const existAuthor = users.some(user => user.id === args.data.author)
 
             if(!existAuthor){
                 throw new Error('Author does not exist')
@@ -157,7 +173,7 @@ const resolvers = {
 
             const post = {
                 id: uuidv4(),
-                ...args
+                ...args.data
             }
 
             posts.push(post)
@@ -165,19 +181,16 @@ const resolvers = {
             return post
         },
         createComment(parent, args, ctx, info){
-            const existAuthor = users.some(user => user.id === args.author) 
-            const existPost = posts.some(post => post.id === args.post)   
-            const isPublished = posts.some(post => post.published == true)
-            if(!existAuthor){
+            const existAuthor = users.some(user => user.id === args.data.author) 
+            const existPost = posts.some(post => post.id === args.data.post && post.published)   
+
+            if(!existAuthor && !existPost){
                 throw new Error('Author does not exist')
-            }
-            if(!existPost && !isPublished){
-                throw new Error('Post does not exist')
             }
 
             const comment = {
                 id: uuidv4(),
-                ...args
+                ...args.data
             }
 
             comments.push(comment)
