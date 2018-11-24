@@ -1,5 +1,5 @@
 import { GraphQLServer} from 'graphql-yoga';
-
+import uuidv4 from 'uuid/v4'
 const users = [{
     id: '1',
     name: 'koyo',
@@ -24,7 +24,6 @@ const users = [{
     email: 'spirit@bun.bun',
     age: 22,
 }]
-
 const posts = [{
     id: '43',
     title: 'Vue is awesome',
@@ -46,7 +45,6 @@ const posts = [{
     published: false,
     author: '3'
 }]
-
 const comments = [{
     id: '1',
     author: '1',
@@ -80,6 +78,27 @@ const typeDefs = `
         users(query:String): [User!]!
         posts(query:String): [Post!]!
         comments(query:String): [Comment!]!
+    }
+    type Mutation {
+        createUser(data: CreateUserInput!): User!
+        createPost(data: CreatePostInput!): Post!
+        createComment(data: CreateCommentInput!): Comment!
+    }
+    input CreateUserInput {
+        name: String!, 
+        email: String!, 
+        age: Int
+    }
+    input CreatePostInput {
+        title: String!, 
+        body: String!, 
+        published: Boolean!, 
+        author: String!
+    }
+    input CreateCommentInput {
+        text: String!, 
+        author: String!, 
+        post: String!
     }
     type Comment {
         id: ID!
@@ -127,6 +146,58 @@ const resolvers = {
                 const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
                 return isTitleMatch || isBodyMatch
             })
+        }
+    },
+    Mutation: {
+        createUser(parent, args, ctx, info){
+            const usedEmail = users.some(user => user.email === args.data.email)
+
+            if(usedEmail) {
+                throw new Error('This email is already used')
+            }
+
+            const user = {
+                id: uuidv4(),
+                ...args.data
+            }
+
+            users.push(user);
+            return user;
+        },
+        createPost(parent, args, ctx, info){
+            const existAuthor = users.some(user => user.id === args.data.author)
+
+            if(!existAuthor){
+                throw new Error('Author does not exist')
+            }
+
+            const post = {
+                id: uuidv4(),
+                ...args.data
+            }
+
+            posts.push(post)
+
+            return post
+        },
+        createComment(parent, args, ctx, info){
+            const existAuthor = users.some(user => user.id === args.data.author) 
+            const existPost = posts.some(post => post.id === args.data.post && post.published)   
+
+            if(!existAuthor && !existPost){
+                throw new Error('Author does not exist')
+            }
+
+            const comment = {
+                id: uuidv4(),
+                ...args.data
+            }
+
+            comments.push(comment)
+
+            return comment
+
+            
         }
     },
     Post: {
